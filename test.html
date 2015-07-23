@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type='text/javascript' src='namespace.js'></script>
+		<script type='text/javascript' src='CoverExtraViewModel.js'></script>
+		<script type='text/javascript' src='ComputeAddonTiers.js'></script>
+		<script type="text/javascript" src='FindAddonHelper.js'></script>
+		<script type='text/javascript' src='jquery-1.9.1.js'></script>
+		<script type="text/javascript" src='DisplayAddonTierButtonsHelper.js'></script>
+		<script type='text/javascript' src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>
+	</head>
+	<body>
+		<div>
+			£2.00 per month
+			<button data-bind="visible: showIncluded('PCD!A')" disabled>Included</button>
+			<button id="SelectPCDA" data-bind="visible: showSelect('PCD!A', false), click: function(){ UserSelectedTier('PCD!A') }">Select</button>
+			<button id="RemovePCDA" data-bind="visible: showRemove('PCD!A')">Remove</button>
+			
+			£3.00 per month
+			<button data-bind="visible: showIncluded('PCD!B')" disabled>Included</button>
+			<button id="SelectPCDB" data-bind="visible: showSelect('PCD!B', false), click: function(){ UserSelectedTier('PCD!B') }">Select</button>
+			<button id="RemovePCDB" data-bind="visible: showRemove('PCD!B')">Remove</button>
+
+			£4.00 per month
+			<button data-bind="visible: showIncluded('PCD!D')" disabled>Included</button>
+			<button id="SelectPCDD" data-bind="visible: showSelect('PCD!D', false), click: function(){ UserSelectedTier('PCD!D') }">Select</button>
+			<button id="RemovePCDD" data-bind="visible: showRemove('PCD!D')">Remove</button>
+			
+			£5.00 per month
+			<button data-bind="visible: showIncluded('PCD!E')" disabled>Included</button>
+			<button id="SelectPCDE" data-bind="visible: showSelect('PCD!E', false), click: function(){ UserSelectedTier('PCD!E') }">Select</button>
+			<button id="RemovePCDE" data-bind="visible: showRemove('PCD!E')">Remove</button>
+
+		</div>
+		<div>
+			£2.00 per month
+			<button data-bind="visible: showIncluded('PCH!A')" disabled>Included</button>
+			<button data-bind="visible: showSelect('PCH!A', false)">Select</button>
+			<button data-bind="visible: showRemove('PCH!A')">Remove</button>
+
+			£3.00 per month
+			<button data-bind="visible: showIncluded('PCH!B')" disabled>Included</button>
+			<button data-bind="visible: showSelect('PCH!B', false)">Select</button>
+			<button data-bind="visible: showRemove('PCH!B')">Remove</button>
+
+		</div>
+		<div>
+			£2.00 per month
+			<button data-bind="visible: showIncluded('PCX!A')" disabled>Included</button>
+			<button data-bind="visible: showSelect('PCX!A', false)">Select</button>
+			<button data-bind="visible: showRemove('PCX!A')">Remove</button>
+			
+			£3.00 per month
+			<button data-bind="visible: showIncluded('PCX!B')" disabled>Included</button>
+			<button data-bind="visible: showSelect('PCX!B', false)">Select</button>
+			<button data-bind="visible: showRemove('PCX!B')">Remove</button>
+		</div>
+		<div>
+			£2.00 per month
+			<button data-bind="visible: showIncluded('PCK')" disabled>Included</button>
+			<button data-bind="visible: showSelect('PCK', false)">Select</button>
+			<button data-bind="visible: showRemove('PCK')">Remove</button>
+		</div>
+		<div>
+			£2.00 per month
+			<button data-bind="visible: showIncluded('PCL')" disabled>Included</button>
+			<button data-bind="visible: showSelect('PCL', false)">Select</button>
+			<button data-bind="visible: showRemove('PCL')">Remove</button>
+		</div>
+	</body>
+</html>
+<script type='text/javascript'>//<![CDATA[
+$(window).load(function(){
+var viewModel = new addons.coverExtraViewModel([{"AddonCode": "PCX", "AddonStatus": "2", "AddonTiers": [{"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCX!A"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCX!B"}], "ProductPackageTypeProductId": "PC!PCX"}, {"AddonCode": "PCK", "AddonStatus": "1", "AddonTiers": [], "ProductPackageTypeProductId": "PC!PCK"}, {"AddonCode": "PCL", "AddonStatus": "1", "AddonTiers": [], "ProductPackageTypeProductId": "PC!PCL"}, {"AddonCode": "PCD", "AddonStatus": "1", "AddonTiers": [{"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCD!A"}, {"AddonStatus": "1", "PolicySectionCoverLevelTypeId": "PCD!B"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCD!D"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCD!E"}], "ProductPackageTypeProductId": "PC!PCD"}, {"AddonCode": "PCH", "AddonStatus": "1", "AddonTiers": [{"AddonStatus": "1", "PolicySectionCoverLevelTypeId": "PCH!A"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCH!B"}], "ProductPackageTypeProductId": "PC!PCH"}]);
+
+viewModel.BreakDownTier.subscribe(function(newValue) {
+	$('#Select' + newValue.replace("!", "")).hide();
+	$('#Remove' + newValue.replace("!", "")).show();
+});
+
+viewModel.BreakDownTier.subscribe(function(oldValue) {
+	if (viewModel.AlreadyIncludedBreakdownTier() != oldValue)
+	{
+		$('#Select' + oldValue.replace("!", "")).show();
+		$('#Remove' + oldValue.replace("!", "")).hide();
+	}
+}, viewModel, "beforeChange");
+
+viewModel.GuaranteedReplacementTier.subscribe(function(newValue){
+	console.log(viewModel.BreakDownTier());
+});
+
+viewModel.ExcessProtectionTier.subscribe(function(newValue){
+});
+
+viewModel.KeyCareTier.subscribe(function(newValue){
+});
+
+viewModel.LegalProtection.subscribe(function(newValue){
+});
+
+viewModel.UserSelectedTier = function(addonTierCode){
+	viewModel.BreakDownTier(addonTierCode);
+};
+
+ko.applyBindings(viewModel);
+});//]]>
+</script>
