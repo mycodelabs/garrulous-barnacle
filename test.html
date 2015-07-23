@@ -14,23 +14,22 @@
 			£2.00 per month
 			<button data-bind="visible: showIncluded('PCD!A')" disabled>Included</button>
 			<button id="SelectPCDA" data-bind="visible: showSelect('PCD!A', false), click: function(){ UserSelectedTier('PCD!A') }">Select</button>
-			<button id="RemovePCDA" data-bind="visible: showRemove('PCD!A')">Remove</button>
+			<button id="RemovePCDA" data-bind="visible: showRemove('PCD!A'), click: function(){ UserRemovedTier('PCD!A') }">Remove</button>
 			
 			£3.00 per month
 			<button data-bind="visible: showIncluded('PCD!B')" disabled>Included</button>
 			<button id="SelectPCDB" data-bind="visible: showSelect('PCD!B', false), click: function(){ UserSelectedTier('PCD!B') }">Select</button>
-			<button id="RemovePCDB" data-bind="visible: showRemove('PCD!B')">Remove</button>
+			<button id="RemovePCDB" data-bind="visible: showRemove('PCD!B'), click: function(){ UserRemovedTier('PCD!B') }">Remove</button>
 
 			£4.00 per month
 			<button data-bind="visible: showIncluded('PCD!D')" disabled>Included</button>
 			<button id="SelectPCDD" data-bind="visible: showSelect('PCD!D', false), click: function(){ UserSelectedTier('PCD!D') }">Select</button>
-			<button id="RemovePCDD" data-bind="visible: showRemove('PCD!D')">Remove</button>
+			<button id="RemovePCDD" data-bind="visible: showRemove('PCD!D'), click: function(){ UserRemovedTier('PCD!D') }">Remove</button>
 			
 			£5.00 per month
 			<button data-bind="visible: showIncluded('PCD!E')" disabled>Included</button>
 			<button id="SelectPCDE" data-bind="visible: showSelect('PCD!E', false), click: function(){ UserSelectedTier('PCD!E') }">Select</button>
-			<button id="RemovePCDE" data-bind="visible: showRemove('PCD!E')">Remove</button>
-
+			<button id="RemovePCDE" data-bind="visible: showRemove('PCD!E'), click: function(){ UserRemovedTier('PCD!E') }">Remove</button>
 		</div>
 		<div>
 			£2.00 per month
@@ -74,16 +73,27 @@ $(window).load(function(){
 var viewModel = new addons.coverExtraViewModel([{"AddonCode": "PCX", "AddonStatus": "2", "AddonTiers": [{"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCX!A"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCX!B"}], "ProductPackageTypeProductId": "PC!PCX"}, {"AddonCode": "PCK", "AddonStatus": "1", "AddonTiers": [], "ProductPackageTypeProductId": "PC!PCK"}, {"AddonCode": "PCL", "AddonStatus": "1", "AddonTiers": [], "ProductPackageTypeProductId": "PC!PCL"}, {"AddonCode": "PCD", "AddonStatus": "1", "AddonTiers": [{"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCD!A"}, {"AddonStatus": "1", "PolicySectionCoverLevelTypeId": "PCD!B"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCD!D"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCD!E"}], "ProductPackageTypeProductId": "PC!PCD"}, {"AddonCode": "PCH", "AddonStatus": "1", "AddonTiers": [{"AddonStatus": "1", "PolicySectionCoverLevelTypeId": "PCH!A"}, {"AddonStatus": "2", "PolicySectionCoverLevelTypeId": "PCH!B"}], "ProductPackageTypeProductId": "PC!PCH"}]);
 
 viewModel.BreakDownTier.subscribe(function(newValue) {
+	
+	if (viewModel.AlreadyIncludedBreakdownTier() != newValue)
+	{
+		$('#Remove' + newValue.replace("!", "")).show();
+	}
+	else
+	{
+		$('#Remove' + newValue.replace("!", "")).hide();
+	}
 	$('#Select' + newValue.replace("!", "")).hide();
-	$('#Remove' + newValue.replace("!", "")).show();
 });
 
 viewModel.BreakDownTier.subscribe(function(oldValue) {
-	if (viewModel.AlreadyIncludedBreakdownTier() != oldValue)
+	if (viewModel.AlreadyIncludedBreakdownTier() == oldValue)
 	{
-		$('#Select' + oldValue.replace("!", "")).show();
-		$('#Remove' + oldValue.replace("!", "")).hide();
+		$('#Select' + oldValue.replace("!", "")).hide();	
 	}
+	else{
+		$('#Select' + oldValue.replace("!", "")).show();	
+	}
+	$('#Remove' + oldValue.replace("!", "")).hide();
 }, viewModel, "beforeChange");
 
 viewModel.GuaranteedReplacementTier.subscribe(function(newValue){
@@ -102,6 +112,10 @@ viewModel.LegalProtection.subscribe(function(newValue){
 viewModel.UserSelectedTier = function(addonTierCode){
 	viewModel.BreakDownTier(addonTierCode);
 };
+
+viewModel.UserRemovedTier = function(addonTierCode){
+	viewModel.BreakDownTier(viewModel.AlreadyIncludedBreakdownTier());
+}
 
 ko.applyBindings(viewModel);
 });//]]>
